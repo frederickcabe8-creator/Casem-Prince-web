@@ -1,14 +1,26 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.gd", "php82Extensions.mbstring", "php82Extensions.exif"]
-
-[phases.install]
-cmds = ["composer install --ignore-platform-req=ext-exif --no-dev --optimize-autoloader"]
+nixPkgs = [
+    "php82",
+    "php82Extensions.pdo_mysql",
+    "php82Extensions.gd",
+    "php82Extensions.mbstring",
+    "php82Extensions.xml",
+    "php82Extensions.curl",
+    "php82Extensions.zip",
+    "php82Extensions.bcmath",
+    "php82Extensions.exif",
+    "php82Extensions.tokenizer",
+    "php82Extensions.fileinfo",
+    "nodejs_20",
+    "nodePackages.npm",
+    "php82Packages.composer"
+]
 
 [phases.build]
 cmds = [
-    "php artisan config:cache",
-    "php artisan route:cache",
-    "php artisan view:cache"
+    "npm ci",
+    "npm run build",
+    "composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-exif"
 ]
 
 [start]
