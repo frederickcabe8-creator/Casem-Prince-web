@@ -9,15 +9,14 @@ use Spatie\Permission\Models\Role;
 class AdminSeeder extends Seeder
 {
     public function run(): void
-    {
-        // Create roles if they don't exist
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $superAdminRole = Role::firstOrCreate(['name' => 'super-admin']);
-
-        // Find user and assign admin role
-        $user = User::where('email', 'casem@fujii.com')->first();
-        if ($user) {
-            $user->assignRole('admin');
-        }
+{
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+    
+    $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    
+    $user = User::where('email', 'casem@fujii.com')->first();
+    if ($user) {
+        $user->syncRoles(['admin']);
     }
+}
 }
