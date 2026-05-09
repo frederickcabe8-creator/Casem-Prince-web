@@ -10,13 +10,21 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        try {
+            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+            $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
 
-        $user = User::where('email', 'casem@fujii.com')->first();
-        if ($user) {
-            $user->syncRoles(['admin']);
+            $user = User::where('email', 'casem@fujii.com')->first();
+            
+            if ($user) {
+                $user->syncRoles(['admin']);
+                $this->command->info('Admin role assigned successfully!');
+            } else {
+                $this->command->error('User not found!');
+            }
+        } catch (\Exception $e) {
+            $this->command->error('Error: ' . $e->getMessage());
         }
     }
 }
