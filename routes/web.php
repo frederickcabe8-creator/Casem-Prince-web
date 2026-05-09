@@ -36,4 +36,16 @@ Route::middleware(['auth', 'role:admin,super-admin'])
          Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
      });
 
+// TEMPORARY - remove after use
+Route::get('/setup-admin', function () {
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+    $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    $user = \App\Models\User::where('email', 'casem@fujii.com')->first();
+    if ($user) {
+        $user->syncRoles(['admin']);
+        return 'Success! Admin role assigned to ' . $user->email;
+    }
+    return 'User not found!';
+});
+
 require __DIR__.'/auth.php';
