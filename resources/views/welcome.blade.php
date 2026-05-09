@@ -4,12 +4,21 @@
 @section('content')
 
     {{-- Hero --}}
-    <section class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white">
-        <div class="max-w-7xl mx-auto px-4 py-24 text-center">
+    <section class="relative text-white overflow-hidden" style="height: 500px;">
+        {{-- GIF Background --}}
+        <img src="{{ asset('images/banner.gif') }}"
+             alt="Banner"
+             class="absolute inset-0 w-full h-full object-cover">
+
+        {{-- Dark overlay --}}
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        {{-- Content --}}
+        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
             <h1 class="text-5xl font-extrabold tracking-tight leading-tight">
                 Shop the latest <br class="hidden sm:block"> products
             </h1>
-            <p class="mt-4 text-lg text-indigo-200 max-w-xl mx-auto">
+            <p class="mt-4 text-lg text-gray-200 max-w-xl mx-auto">
                 Discover thousands of products at unbeatable prices. Free shipping on orders over $100.
             </p>
             <a href="{{ route('products.index') }}"
