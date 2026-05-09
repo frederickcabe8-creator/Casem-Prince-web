@@ -34,7 +34,7 @@ Route::middleware(['auth', 'role:admin,super-admin'])
          Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
          Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
          Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-         Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+         
      });
 
 // TEMPORARY - remove after use
