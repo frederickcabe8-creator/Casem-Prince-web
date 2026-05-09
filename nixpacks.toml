@@ -20,8 +20,5 @@ nixPkgs = [
 cmds = [
     "npm ci",
     "npm run build",
-    "composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-exif"
+    "composer install --no-dev --optimize-autoloader"
 ]
-
-[start]
-cmd = "php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT"
