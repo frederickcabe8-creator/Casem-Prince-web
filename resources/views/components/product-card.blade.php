@@ -3,7 +3,7 @@
 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group overflow-hidden">
 
     {{-- Product image --}}
-    <a href="{{ route('products.show', $product) }}" class="block overflow-hidden aspect-square bg-gray-100">
+    <a href="{{ route('products.show', $product) }}" class="block overflow-hidden aspect-square bg-gray-100 relative">
         @if ($product->getFirstMediaUrl('thumbnail'))
             <img
                 src="{{ $product->getFirstMediaUrl('thumbnail') }}"
@@ -17,6 +17,26 @@
                 </svg>
             </div>
         @endif
+
+        {{-- Wishlist heart button --}}
+        @auth
+            @php
+                $inWishlist = auth()->user()->wishlist->contains('product_id', $product->id);
+            @endphp
+            <form action="{{ route('wishlist.toggle', $product) }}" method="POST"
+                  class="absolute top-2 right-2">
+                @csrf
+                <button type="submit"
+                    class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center hover:scale-110 transition">
+                    <svg class="w-4 h-4 {{ $inWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400' }}"
+                         fill="{{ $inWishlist ? 'currentColor' : 'none' }}"
+                         stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </button>
+            </form>
+        @endauth
     </a>
 
     <div class="p-4">

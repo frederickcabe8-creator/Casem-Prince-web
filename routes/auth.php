@@ -1,64 +1,48 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+// Public storefront
+Route::get('/', fn () => view('welcome'))->name('home');
+Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::post('/currency/switch', [CurrencyController::class, 'switch'])->name('currency.switch');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+// Stripe webhook (no CSRF)
+Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])
+     ->name('webhooks.stripe');
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+// Authenticated customer routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
+    Route::resource('cart', CartController::class)
+         ->only(['index', 'store', 'update', 'destroy']);
+    Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::resource('orders', OrderController::class)
+         ->only(['index', 'show']);
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request');
-
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->name('password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.store');
+    // Wishlist
+    Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('wishlist/{product}/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::delete('wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('verify-email', EmailVerificationPromptController::class)
-        ->name('verification.notice');
+// Admin panel
+Route::middleware(['auth', 'role:admin,super-admin'])
+     ->prefix('admin')
+     ->name('admin.')
+     ->group(function () {
+         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+         Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+     });
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:6,1')
-        ->name('verification.send');
-
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-        ->name('password.confirm');
-
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
-
-        // PayPal routes
-Route::get('paypal/redirect/{order}', [\App\Http\Controllers\PayPalController::class, 'redirect'])->name('paypal.redirect');
-Route::get('paypal/success/{order}', [\App\Http\Controllers\PayPalController::class, 'success'])->name('paypal.success');
-Route::get('paypal/cancel/{order}', [\App\Http\Controllers\PayPalController::class, 'cancel'])->name('paypal.cancel');
-});
+require __DIR__.'/auth.php';

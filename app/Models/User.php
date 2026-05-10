@@ -48,4 +48,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Address::class);
     }
+
+    public function wishlist(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }
