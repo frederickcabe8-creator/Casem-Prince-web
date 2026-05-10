@@ -57,12 +57,19 @@
                             </button>
                             <div x-show="open" @click.outside="open = false"
                                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">My Orders</a>
-                                @if (Route::has('profile.edit'))
-    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">Profile</a>
-    
-@endif
                                 
+                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">My Orders</a>
+                                
+                                @if (Route::has('profile.edit'))
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">Profile</a>
+                                @endif
+
+                                {{-- Admin Section --}}
+                                @if(auth()->check() && method_exists(auth()->user(), 'hasAnyRole') && auth()->user()->hasAnyRole(['admin', 'super-admin']))
+                                    <div class="border-t border-gray-100 my-1"></div>
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50">Dashboard</a>
+                                    <a href="{{ route('admin.products.index') }}" class="block px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50">Admin Panel</a>
+                                @endif
                                 
                                 <div class="border-t border-gray-100 my-1"></div>
                                 <form method="POST" action="{{ route('logout') }}">
