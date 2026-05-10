@@ -39,6 +39,20 @@
 
                 {{-- Right nav --}}
                 <div class="flex items-center gap-4">
+
+                    {{-- Currency Switcher --}}
+                    <form method="POST" action="{{ route('currency.switch') }}" class="flex items-center">
+                        @csrf
+                        <select name="currency" onchange="this.form.submit()"
+                            class="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
+                            @foreach(app(\App\Services\CurrencyService::class)->getSupportedCurrencies() as $code => $label)
+                                <option value="{{ $code }}" {{ session('currency', 'USD') === $code ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+
                     @auth
                         {{-- Cart icon --}}
                         <a href="{{ route('cart.index') }}" class="relative text-gray-600 hover:text-indigo-600">
@@ -57,9 +71,9 @@
                             </button>
                             <div x-show="open" @click.outside="open = false"
                                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
-                                
+
                                 <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">My Orders</a>
-                                
+
                                 @if (Route::has('profile.edit'))
                                     <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">Profile</a>
                                 @endif
@@ -70,7 +84,7 @@
                                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50">Dashboard</a>
                                     <a href="{{ route('admin.products.index') }}" class="block px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50">Admin Panel</a>
                                 @endif
-                                
+
                                 <div class="border-t border-gray-100 my-1"></div>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

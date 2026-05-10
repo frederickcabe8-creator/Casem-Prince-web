@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WebhookController;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 // Public storefront
 Route::get('/', fn () => view('welcome'))->name('home');
 Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::post('/currency/switch', [CurrencyController::class, 'switch'])->name('currency.switch');
 
 // Stripe webhook (no CSRF)
 Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])
