@@ -72,4 +72,17 @@ Route::get('/verify-all-users', function () {
     return 'All users verified!';
 });
 
+// TEMPORARY DEBUG - remove after fixing
+Route::get('/debug-login/{email}', function ($email) {
+    $user = \App\Models\User::where('email', $email)->first();
+    if (!$user) return 'User not found: ' . $email;
+    return response()->json([
+        'id' => $user->id,
+        'email' => $user->email,
+        'email_verified_at' => $user->email_verified_at,
+        'roles' => $user->roles->pluck('name'),
+        'has_password' => !empty($user->password),
+    ]);
+});
+
 require __DIR__.'/auth.php';
