@@ -36,11 +36,11 @@
         <div class="mt-3 flex items-center justify-between">
             <div class="flex items-baseline gap-2">
                 <span class="text-lg font-bold text-gray-900">
-                    ${{ number_format($product->effective_price, 2) }}
+                    {{ formatPrice($product->effective_price) }}
                 </span>
                 @if ($product->is_on_sale)
                     <span class="text-sm text-gray-400 line-through">
-                        ${{ number_format($product->base_price, 2) }}
+                        {{ formatPrice($product->base_price) }}
                     </span>
                 @endif
             </div>

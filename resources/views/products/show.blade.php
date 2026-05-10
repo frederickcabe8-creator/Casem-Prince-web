@@ -62,14 +62,14 @@
             {{-- Price --}}
             <div class="mt-5 flex items-baseline gap-3">
                 <span class="text-4xl font-extrabold text-gray-900">
-                    ${{ number_format($product->effective_price, 2) }}
+                    {{ formatPrice($product->effective_price) }}
                 </span>
                 @if ($product->is_on_sale)
                     <span class="text-xl text-gray-400 line-through">
-                        ${{ number_format($product->base_price, 2) }}
+                        {{ formatPrice($product->base_price) }}
                     </span>
                     <span class="text-sm bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">
-                        Save ${{ number_format($product->base_price - $product->sale_price, 2) }}
+                        Save {{ formatPrice($product->base_price - $product->sale_price) }}
                     </span>
                 @endif
             </div>
