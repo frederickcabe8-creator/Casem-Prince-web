@@ -52,13 +52,8 @@ Route::get('/setup-admin', function () {
 // TEMPORARY DEBUG - remove after fixing
 Route::get('/debug-dashboard', function () {
     try {
-        $results = [];
-        $results['orders'] = \App\Models\Order::count();
-        $results['products'] = \App\Models\Product::count();
-        $results['users'] = \App\Models\User::count();
-        $results['order_items_table'] = \Illuminate\Support\Facades\Schema::hasTable('order_items');
-        $results['sessions_table'] = \Illuminate\Support\Facades\Schema::hasTable('sessions');
-        return response()->json($results);
+        $totalCustomers = \App\Models\User::role('customer')->count();
+        return 'Customers OK: ' . $totalCustomers;
     } catch (\Exception $e) {
         return 'ERROR: ' . $e->getMessage();
     }
