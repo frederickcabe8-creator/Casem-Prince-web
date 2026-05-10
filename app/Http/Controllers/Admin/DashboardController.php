@@ -15,7 +15,9 @@ class DashboardController extends Controller
         // Overview stats
         $totalRevenue    = Order::where('payment_status', 'paid')->sum('total_amount');
         $totalOrders     = Order::count();
-        $totalCustomers  = User::role('customer')->count();
+        $totalCustomers  = User::whereDoesntHave('roles', function($q) {
+            $q->whereIn('name', ['admin', 'super-admin']);
+        })->count();
         $totalProducts   = Product::count();
 
         // Revenue this month vs last month
