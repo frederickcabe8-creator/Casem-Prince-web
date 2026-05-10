@@ -49,4 +49,19 @@ Route::get('/setup-admin', function () {
     return 'User not found!';
 });
 
+// TEMPORARY DEBUG - remove after fixing
+Route::get('/debug-dashboard', function () {
+    try {
+        $results = [];
+        $results['orders'] = \App\Models\Order::count();
+        $results['products'] = \App\Models\Product::count();
+        $results['users'] = \App\Models\User::count();
+        $results['order_items_table'] = \Illuminate\Support\Facades\Schema::hasTable('order_items');
+        $results['sessions_table'] = \Illuminate\Support\Facades\Schema::hasTable('sessions');
+        return response()->json($results);
+    } catch (\Exception $e) {
+        return 'ERROR: ' . $e->getMessage();
+    }
+});
+
 require __DIR__.'/auth.php';
