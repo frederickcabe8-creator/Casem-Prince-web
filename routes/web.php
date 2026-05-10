@@ -64,4 +64,12 @@ Route::get('/fix-sessions', function () {
     }
 });
 
+// TEMPORARY - remove after fixing
+Route::get('/verify-all-users', function () {
+    \App\Models\User::whereNull('email_verified_at')->update([
+        'email_verified_at' => now()
+    ]);
+    return 'All users verified!';
+});
+
 require __DIR__.'/auth.php';
