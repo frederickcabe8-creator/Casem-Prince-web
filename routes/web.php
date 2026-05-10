@@ -49,13 +49,18 @@ Route::get('/setup-admin', function () {
     return 'User not found!';
 });
 
-// TEMPORARY DEBUG - remove after fixing
-Route::get('/debug-dashboard', function () {
+// TEMPORARY - remove after fixing
+Route::get('/fix-sessions', function () {
     try {
-        $totalCustomers = \App\Models\User::role('customer')->count();
-        return 'Customers OK: ' . $totalCustomers;
+        $exists = \Illuminate\Support\Facades\Schema::hasTable('sessions');
+        if (!$exists) {
+            \Illuminate\Support\Facades\Artisan::call('session:table');
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            return 'Sessions table CREATED successfully!';
+        }
+        return 'Sessions table already EXISTS - safe to use database driver';
     } catch (\Exception $e) {
-        return 'ERROR: ' . $e->getMessage();
+        return 'Error: ' . $e->getMessage();
     }
 });
 
