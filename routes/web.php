@@ -49,6 +49,16 @@ Route::get('/setup-admin', function () {
     return 'User not found!';
 });
 
+// TEMPORARY - remove after use
+Route::get('/setup-customer', function () {
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+    \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
+    \App\Models\User::whereDoesntHave('roles')->each(function ($user) {
+        $user->assignRole('customer');
+    });
+    return 'Customer role created and assigned to all users without roles!';
+});
+
 // TEMPORARY - remove after fixing
 Route::get('/fix-sessions', function () {
     try {
