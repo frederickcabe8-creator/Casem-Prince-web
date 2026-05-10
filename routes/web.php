@@ -16,7 +16,7 @@ Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])
      ->name('webhooks.stripe');
 
 // Authenticated customer routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
     Route::resource('cart', CartController::class)
          ->only(['index', 'store', 'update', 'destroy']);
